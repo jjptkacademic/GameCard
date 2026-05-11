@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกม — จับคู่บุคลากร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-page">
+
+    <!-- Header -->
+    <header class="game-header">
+      <div class="player-name" id="playerDisplay">ผู้เล่น</div>
+
+      <div class="timer-box" id="timerBox">
+        <span class="timer-label">เวลา</span>
+        <span class="timer-value" id="timerValue">01:00</span>
+      </div>
+
+      <div class="score-box">
+        <span class="score-label">วาง</span>
+        <span class="score-value" id="placedCount">0/13</span>
+      </div>
+    </header>
+
+    <!-- Score banner (ปรากฏหลังกด ตรวจ) -->
+    <div class="score-banner hidden" id="scoreBanner">
+      คะแนนล่าสุด: <span id="lastScoreDisplay">0</span>/13 — เล่นต่อได้จนหมดเวลา!
+    </div>
+
+    <!-- Game body -->
+    <div class="game-body">
+
+      <!-- Photo tray (bottom on mobile, left on desktop) -->
+      <div class="photo-tray" id="photoTray">
+        <div class="tray-label">รูปบุคลากร — คลิกเลือก</div>
+        <div class="photo-row" id="photoRow"></div>
+      </div>
+
+      <!-- Slots + submit -->
+      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+        <div class="slots-area">
+          <div class="slots-grid" id="slotsGrid"></div>
+        </div>
+
+        <div class="submit-bar">
+          <button class="btn-submit" id="submitBtn">ตรวจคำตอบ ✓</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Photo viewer modal -->
+  <div class="modal-overlay hidden" id="photoViewModal" onclick="closePhotoModal()">
+    <div class="photo-view-box" onclick="event.stopPropagation()">
+      <button class="photo-view-close" onclick="closePhotoModal()">✕</button>
+      <img id="photoViewImg" src="" alt="">
+    </div>
+  </div>
+
+  <!-- Check modal (ตรวจคำตอบ — เล่นต่อได้) -->
+  <div class="modal-overlay hidden" id="checkModal">
+    <div class="modal-box">
+      <div class="modal-emoji" id="checkEmoji">🎯</div>
+      <h2 id="checkTitle">ตรวจแล้ว!</h2>
+      <div class="big-score" id="checkScore">0</div>
+      <div class="score-of">/ 13 คะแนน</div>
+      <div class="check-detail" id="checkDetail"></div>
+      <button class="btn-continue" onclick="continueGame()">เล่นต่อ →</button>
+    </div>
+  </div>
+
+  <!-- Result modal -->
+  <div class="modal-overlay hidden" id="resultModal">
+    <div class="modal-box">
+      <h2 id="resultEmoji">🎉</h2>
+      <h2 id="resultTitle">ผลการเล่น</h2>
+      <p class="subtitle" id="resultSubtitle"></p>
+      <div class="big-score" id="resultScore">0</div>
+      <div class="score-of">/ 13 คะแนน</div>
+      <div class="time-taken" id="resultTime">เวลา 0 วินาที</div>
+      <button class="btn-home" id="btnHome" disabled onclick="location.href='index.html'">
+        กำลังบันทึก...
+      </button>
+      <p class="save-status" id="saveStatus"></p>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

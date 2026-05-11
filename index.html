@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมจับคู่บุคลากร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <header class="site-header">
+      <h1>🎮 เกมจับคู่บุคลากร</h1>
+      <p>จับคู่รูปภาพให้ตรงกับชื่อและตำแหน่ง ภายใน 60 วินาที</p>
+    </header>
+
+    <!-- Ranking -->
+    <section class="ranking-card">
+      <h2>🏆 ตารางอันดับ</h2>
+      <div id="rankingLoading" class="loading-text">กำลังโหลด...</div>
+      <table id="rankingTable" class="ranking-table hidden">
+        <thead>
+          <tr>
+            <th>อันดับ</th>
+            <th>ชื่อ</th>
+            <th>ชั้น</th>
+            <th>คะแนน</th>
+            <th>เวลา (วิ)</th>
+          </tr>
+        </thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+      <p id="rankingEmpty" class="loading-text hidden">ยังไม่มีข้อมูล — เป็นคนแรกที่เล่นกัน!</p>
+    </section>
+
+    <!-- Register -->
+    <section class="register-card">
+      <h2>เริ่มเล่นเกม</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="playerName">ชื่อเล่น / ฉายา</label>
+          <input type="text" id="playerName" placeholder="กรอกชื่อเล่น" required maxlength="30" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="playerClass">ชั้นเรียน</label>
+          <input type="text" id="playerClass" placeholder="เช่น ม.3/1" required maxlength="20" autocomplete="off">
+        </div>
+        <button type="submit" class="btn-primary">เริ่มเล่น →</button>
+      </form>
+    </section>
+
+  </div>
+
+  <script src="config.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
