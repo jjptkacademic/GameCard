@@ -710,57 +710,66 @@ body {
   .slot-position { font-size: 0.84rem; }
 }
 
-/* ===== HEADER ACTIONS (Hint + Surrender) ===== */
-.header-actions {
+/* ===== HINT + SURRENDER CARDS (ทำเหมือน timer-box) ===== */
+.hint-box, .surrender-box {
   display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.btn-hint, .btn-surrender {
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  width: 36px;
-  height: 36px;
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  padding: 0;
+  border-radius: 8px;
+  padding: 4px 10px;
+  min-width: 52px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+  user-select: none;
 }
 
-.btn-hint {
+.hint-box {
   background: rgba(255,255,255,0.12);
-  color: white;
-  opacity: 0.4;
+  opacity: 0.45;
 }
 
-.btn-hint:not(:disabled) {
+.hint-box.active {
+  background: rgba(251,191,36,0.35);
   opacity: 1;
-  background: #fbbf24;
-  color: #1e293b;
+  border: 1.5px solid rgba(251,191,36,0.6);
 }
 
-.btn-hint:not(:disabled):hover { background: #f59e0b; }
+.hint-box.active:hover { background: rgba(251,191,36,0.55); }
 
-.btn-surrender {
-  background: rgba(239,68,68,0.25);
-  color: white;
-  border: 1.5px solid rgba(239,68,68,0.4);
+.hint-box.depleted {
+  background: rgba(255,255,255,0.06);
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
-.btn-surrender:hover { background: rgba(239,68,68,0.5); }
+.surrender-box {
+  background: rgba(239,68,68,0.2);
+  border: 1.5px solid rgba(239,68,68,0.35);
+}
 
-.btn-surrender.armed {
+.surrender-box:hover { background: rgba(239,68,68,0.38); transform: scale(1.03); }
+
+.surrender-box.armed {
   background: #ef4444;
   border-color: #ef4444;
   animation: pulse 0.6s infinite;
-  font-size: 0.72rem;
-  width: auto;
-  padding: 0 10px;
-  letter-spacing: 0;
+}
+
+.box-label {
+  font-size: 0.6rem;
+  opacity: 0.8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: white;
+  white-space: nowrap;
+}
+
+.box-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
 }
 
 /* ===== HINT GLOW on slots ===== */
@@ -818,8 +827,9 @@ body {
 .result-ranking-table tr:last-child td { border-bottom: none; }
 
 @media (min-width: 768px) {
-  .btn-hint, .btn-surrender { width: 40px; height: 40px; font-size: 1.2rem; }
-  .btn-surrender.armed { width: auto; font-size: 0.78rem; }
+  .hint-box, .surrender-box { padding: 5px 14px; min-width: 64px; }
+  .box-label { font-size: 0.65rem; }
+  .box-value { font-size: 1.4rem; }
 }
 
 /* ===== PHOTO VIEW MODAL ===== */

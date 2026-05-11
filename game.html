@@ -25,9 +25,14 @@
         <span class="score-value" id="placedCount">0/13</span>
       </div>
 
-      <div class="header-actions">
-        <button class="btn-hint" id="hintBtn" onclick="showHint()" disabled title="hint (เลือกรูปก่อน)">💡</button>
-        <button class="btn-surrender" id="surrenderBtn" onclick="surrender()">🏳️</button>
+      <div class="hint-box" id="hintBox" onclick="showHint()">
+        <span class="box-label">HINT</span>
+        <span class="box-value" id="hintCount">3</span>
+      </div>
+
+      <div class="surrender-box" id="surrenderBox" onclick="surrender()">
+        <span class="box-label">ยอมแพ้</span>
+        <span class="box-value">🏳️</span>
       </div>
     </header>
 

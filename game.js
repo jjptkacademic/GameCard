@@ -12,7 +12,8 @@ const state = {
 
 let surrenderArmed = false;
 let surrenderTimer = null;
-let hintTimer = null;
+let hintTimer     = null;
+let hintRemaining = 3;
 
 // ===== Init =====
 function init() {
@@ -92,7 +93,7 @@ function onPhotoClick(personId) {
   clearSelection();
   state.selectedId = personId;
   document.getElementById(`photo-${personId}`).classList.add('selected');
-  document.getElementById('hintBtn').disabled = false;
+  if (hintRemaining > 0) document.getElementById('hintBox').classList.add('active');
 
   document.querySelectorAll('.slot-card').forEach(slot => {
     const slotId = parseInt(slot.dataset.slotId);
@@ -144,7 +145,7 @@ function clearSelection() {
     if (el) el.classList.remove('selected');
   }
   state.selectedId = null;
-  document.getElementById('hintBtn').disabled = true;
+  document.getElementById('hintBox').classList.remove('active');
   document.querySelectorAll('.slot-card').forEach(s => s.classList.remove('drop-ready'));
   clearHint();
 }
@@ -221,13 +222,13 @@ function surrender() {
 
   if (!surrenderArmed) {
     surrenderArmed = true;
-    const btn = document.getElementById('surrenderBtn');
-    btn.textContent = '⚠️ ยืนยัน?';
-    btn.classList.add('armed');
+    const box = document.getElementById('surrenderBox');
+    box.querySelector('.box-label').textContent = 'ยืนยัน?';
+    box.classList.add('armed');
     surrenderTimer = setTimeout(() => {
       surrenderArmed = false;
-      btn.textContent = '🏳️';
-      btn.classList.remove('armed');
+      box.querySelector('.box-label').textContent = 'ยอมแพ้';
+      box.classList.remove('armed');
     }, 2500);
     return;
   }
@@ -240,27 +241,31 @@ function surrender() {
 
 // ===== Hint =====
 function showHint() {
-  if (!state.selectedId || state.gameOver) return;
+  if (!state.selectedId || state.gameOver || hintRemaining <= 0) return;
 
   clearHint();
   clearTimeout(hintTimer);
 
-  const correctSlotId = state.selectedId;
+  hintRemaining--;
+  document.getElementById('hintCount').textContent = hintRemaining;
 
-  // Slots ที่ยังไม่ถูก (ไม่รวม slot ที่ถูกต้องแล้ว) และไม่ใช่ correct slot ของรูปที่เลือก
+  if (hintRemaining === 0) {
+    const box = document.getElementById('hintBox');
+    box.classList.remove('active');
+    box.classList.add('depleted');
+  }
+
+  const correctSlotId = state.selectedId;
   const candidates = CONFIG.personnel
     .filter(p => p.id !== correctSlotId && state.placements[p.id] !== p.id)
     .map(p => p.id);
 
-  const wrong2 = shuffle(candidates).slice(0, 2);
-  const hintSlots = [correctSlotId, ...wrong2];
-
+  const hintSlots = [correctSlotId, ...shuffle(candidates).slice(0, 2)];
   hintSlots.forEach(slotId => {
     const el = document.getElementById(`slot-${slotId}`);
     if (el) el.classList.add('hint-glow');
   });
 
-  // auto-clear หลัง 4 วินาที
   hintTimer = setTimeout(clearHint, 4000);
 }
 
