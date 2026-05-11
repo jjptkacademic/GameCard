@@ -734,9 +734,18 @@ body {
   background: rgba(251,191,36,0.45);
   border-color: rgba(251,191,36,0.85);
   opacity: 1;
+  animation: hintInvite 1.2s ease-in-out infinite;
 }
 
-.hint-box.active:hover { background: rgba(251,191,36,0.65); }
+@keyframes hintInvite {
+  0%, 100% { background: rgba(251,191,36,0.45); box-shadow: none; transform: scale(1); }
+  50%       { background: rgba(251,191,36,0.75); box-shadow: 0 0 12px 3px rgba(251,191,36,0.5); transform: scale(1.06); }
+}
+
+.hint-box.active:hover {
+  animation: none;
+  background: rgba(251,191,36,0.65);
+}
 
 .hint-box.depleted {
   background: rgba(255,255,255,0.06);
