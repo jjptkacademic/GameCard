@@ -340,40 +340,6 @@ function showCheckModal(score) {
   document.getElementById('checkDetail').innerHTML =
     `ถูก <b>${score}</b> · ผิด <b>${wrong}</b> · ยังไม่วาง <b>${empty}</b>`;
 
-  // แสดงรายการคำตอบ (ผิดก่อน → ว่าง → ถูก)
-  const wrongItems  = CONFIG.personnel.filter(p => state.placements[p.id] !== undefined && state.placements[p.id] !== p.id);
-  const emptyItems  = CONFIG.personnel.filter(p => state.placements[p.id] === undefined);
-  const correctItems = CONFIG.personnel.filter(p => state.placements[p.id] === p.id);
-
-  const rows = [
-    ...wrongItems.map(p => {
-      const placed = CONFIG.personnel.find(x => x.id === state.placements[p.id]);
-      return `<div class="answer-item wrong">
-        <span class="answer-icon">❌</span>
-        <div class="answer-text">
-          <div class="answer-correct">${p.name}</div>
-          <div class="answer-placed">วางไป: ${placed ? placed.name : '?'}</div>
-        </div>
-      </div>`;
-    }),
-    ...emptyItems.map(p => `
-      <div class="answer-item empty">
-        <span class="answer-icon">⬜</span>
-        <div class="answer-text">
-          <div class="answer-correct">${p.name}</div>
-          <div class="answer-placed">ยังไม่วาง</div>
-        </div>
-      </div>`),
-    ...correctItems.map(p => `
-      <div class="answer-item correct">
-        <span class="answer-icon">✅</span>
-        <div class="answer-text">
-          <div class="answer-correct">${p.name}</div>
-        </div>
-      </div>`)
-  ];
-
-  document.getElementById('checkAnswers').innerHTML = rows.join('');
   document.getElementById('checkModal').classList.remove('hidden');
 }
 
