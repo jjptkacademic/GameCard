@@ -24,6 +24,11 @@
         <span class="score-label">วาง</span>
         <span class="score-value" id="placedCount">0/13</span>
       </div>
+
+      <div class="header-actions">
+        <button class="btn-hint" id="hintBtn" onclick="showHint()" disabled title="hint (เลือกรูปก่อน)">💡</button>
+        <button class="btn-surrender" id="surrenderBtn" onclick="surrender()">🏳️</button>
+      </div>
     </header>
 
     <!-- Score banner (ปรากฏหลังกด ตรวจ) -->
@@ -87,6 +92,12 @@
         กำลังบันทึก...
       </button>
       <p class="save-status" id="saveStatus"></p>
+
+      <!-- Ranking หลังบันทึกเสร็จ -->
+      <div class="result-ranking hidden" id="resultRanking">
+        <div class="result-ranking-title">🏆 ตารางอันดับล่าสุด</div>
+        <div id="resultRankingBody"></div>
+      </div>
     </div>
   </div>
 

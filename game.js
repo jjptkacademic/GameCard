@@ -1,14 +1,18 @@
 // ===== State =====
 const state = {
   selectedId: null,
-  placements: {},         // { slotPersonId: placedPersonId }
+  placements: {},
   timeLeft: CONFIG.timeLimit,
   timerInterval: null,
   gameOver: false,
-  lastScore: null,        // null = ยังไม่เคย check, number = score ล่าสุด
+  lastScore: null,
   timeTaken: 0,
   player: null
 };
+
+let surrenderArmed = false;
+let surrenderTimer = null;
+let hintTimer = null;
 
 // ===== Init =====
 function init() {
@@ -88,6 +92,7 @@ function onPhotoClick(personId) {
   clearSelection();
   state.selectedId = personId;
   document.getElementById(`photo-${personId}`).classList.add('selected');
+  document.getElementById('hintBtn').disabled = false;
 
   document.querySelectorAll('.slot-card').forEach(slot => {
     const slotId = parseInt(slot.dataset.slotId);
@@ -139,7 +144,9 @@ function clearSelection() {
     if (el) el.classList.remove('selected');
   }
   state.selectedId = null;
+  document.getElementById('hintBtn').disabled = true;
   document.querySelectorAll('.slot-card').forEach(s => s.classList.remove('drop-ready'));
+  clearHint();
 }
 
 function markPhotoPlaced(personId, placed) {
@@ -206,6 +213,59 @@ function onTimerEnd() {
   const score = state.lastScore !== null ? state.lastScore : calcScore();
   state.timeTaken = CONFIG.timeLimit;
   endGame(score, true);
+}
+
+// ===== Surrender (2-tap) =====
+function surrender() {
+  if (state.gameOver) return;
+
+  if (!surrenderArmed) {
+    surrenderArmed = true;
+    const btn = document.getElementById('surrenderBtn');
+    btn.textContent = '⚠️ ยืนยัน?';
+    btn.classList.add('armed');
+    surrenderTimer = setTimeout(() => {
+      surrenderArmed = false;
+      btn.textContent = '🏳️';
+      btn.classList.remove('armed');
+    }, 2500);
+    return;
+  }
+
+  clearTimeout(surrenderTimer);
+  const score = state.lastScore !== null ? state.lastScore : 0;
+  state.timeTaken = CONFIG.timeLimit - state.timeLeft;
+  endGame(score, false);
+}
+
+// ===== Hint =====
+function showHint() {
+  if (!state.selectedId || state.gameOver) return;
+
+  clearHint();
+  clearTimeout(hintTimer);
+
+  const correctSlotId = state.selectedId;
+
+  // Slots ที่ยังไม่ถูก (ไม่รวม slot ที่ถูกต้องแล้ว) และไม่ใช่ correct slot ของรูปที่เลือก
+  const candidates = CONFIG.personnel
+    .filter(p => p.id !== correctSlotId && state.placements[p.id] !== p.id)
+    .map(p => p.id);
+
+  const wrong2 = shuffle(candidates).slice(0, 2);
+  const hintSlots = [correctSlotId, ...wrong2];
+
+  hintSlots.forEach(slotId => {
+    const el = document.getElementById(`slot-${slotId}`);
+    if (el) el.classList.add('hint-glow');
+  });
+
+  // auto-clear หลัง 4 วินาที
+  hintTimer = setTimeout(clearHint, 4000);
+}
+
+function clearHint() {
+  document.querySelectorAll('.slot-card.hint-glow').forEach(el => el.classList.remove('hint-glow'));
 }
 
 // ===== Check answers (Submit button) =====
@@ -338,6 +398,7 @@ async function saveScore(score) {
     await fetch(`${CONFIG.appScriptUrl}?${params}`);
     statusEl.textContent = '✅ บันทึกคะแนนแล้ว!';
     statusEl.classList.add('saved');
+    loadResultRanking();
   } catch {
     statusEl.textContent = '❌ บันทึกไม่สำเร็จ — กดกลับได้เลย';
     statusEl.classList.add('error');
@@ -345,6 +406,50 @@ async function saveScore(score) {
 
   btnHome.textContent = 'กลับหน้าหลัก';
   btnHome.disabled = false;
+}
+
+// ===== Ranking in result modal =====
+async function loadResultRanking() {
+  const container = document.getElementById('resultRanking');
+  const body      = document.getElementById('resultRankingBody');
+
+  body.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:0.85rem;padding:8px 0">กำลังโหลด...</p>';
+  container.classList.remove('hidden');
+
+  try {
+    const res  = await fetch(`${CONFIG.appScriptUrl}?action=ranking`);
+    const data = await res.json();
+
+    if (!data.rows || data.rows.length === 0) {
+      body.innerHTML = '';
+      return;
+    }
+
+    body.innerHTML = `
+      <table class="result-ranking-table">
+        <thead>
+          <tr><th>#</th><th>ชื่อ</th><th>ชั้น</th><th>คะแนน</th><th>วิ</th></tr>
+        </thead>
+        <tbody>
+          ${data.rows.map((row, i) => {
+            const mine = row.name === state.player.name && String(row.class) === String(state.player.class);
+            return `<tr class="${mine ? 'my-row' : ''}">
+              <td>${i + 1}</td>
+              <td>${escHtml(row.name)}</td>
+              <td>${escHtml(row.class)}</td>
+              <td>${row.score}/13</td>
+              <td>${row.time}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  } catch {
+    body.innerHTML = '<p style="text-align:center;color:#ef4444;font-size:0.85rem">โหลด ranking ไม่ได้</p>';
+  }
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 init();
