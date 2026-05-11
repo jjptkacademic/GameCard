@@ -725,21 +725,23 @@ body {
 }
 
 .hint-box {
-  background: rgba(255,255,255,0.12);
-  opacity: 0.45;
+  background: rgba(251,191,36,0.25);
+  border: 1.5px solid rgba(251,191,36,0.45);
+  opacity: 0.55;
 }
 
 .hint-box.active {
-  background: rgba(251,191,36,0.35);
+  background: rgba(251,191,36,0.45);
+  border-color: rgba(251,191,36,0.85);
   opacity: 1;
-  border: 1.5px solid rgba(251,191,36,0.6);
 }
 
-.hint-box.active:hover { background: rgba(251,191,36,0.55); }
+.hint-box.active:hover { background: rgba(251,191,36,0.65); }
 
 .hint-box.depleted {
   background: rgba(255,255,255,0.06);
-  opacity: 0.3;
+  border-color: transparent;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
